@@ -1,0 +1,1 @@
+$(sed -E 's/^[0-9]+: //; s/\)$//' /home/rashid/projects/personal/sitebuilder-content/repos/all_github_repos.txt)
