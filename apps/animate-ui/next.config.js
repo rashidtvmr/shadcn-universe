@@ -1,0 +1,1 @@
+module.exports = require('./apps/www/next.config');

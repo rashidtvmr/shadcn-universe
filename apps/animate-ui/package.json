@@ -3,7 +3,7 @@
   "version": "1.0.27",
   "private": true,
   "scripts": {
-    "build": "next build ./apps/www",
+    "build": "cd apps/www && next build",
     "dev": "next dev ./apps/www",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
