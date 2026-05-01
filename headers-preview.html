@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Header/Navbar Components Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .preview-section { min-height: 100px; border-bottom: 1px solid #e5e7eb; padding: 1.5rem 0; }
+    .preview-section:last-child { border-bottom: none; }
+    .preview-label { font-weight: 600; color: #374151; margin-bottom: 1rem; font-size: 0.875rem; }
+    .preview-container { background: #f9fafb; border-radius: 0.5rem; overflow: hidden; }
+    .dark .preview-container { background: #1f2937; }
+  </style>
+</head>
+<body class="bg-gray-50 p-8">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Header/Navbar Components Gallery</h1>
+    <p class="text-gray-600 mb-8">A collection of header/navbar components from various shadcn-ui and React projects</p>
+    
+    <div id="root"></div>
+  </div>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+    
+    // Icons as inline SVG components
+    const Menu = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>;
+    const X = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+    const Sun = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
+    const Moon = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
+    const Github = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>;
+    const Search = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
+    const Bell = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>;
+    const BookOpen = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
+    const ExternalLink = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>;
+    const Star = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+    const Twitter = (props) => <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>;
+
+    // ============================================
+    // SHADCN-UI-BLOCKS NAVBARS (shadcnblocks)
+    // ============================================
+
+    // Navbar 01 - Basic with Logo, Nav Links, CTA Buttons
+    function Navbar01() {
+      return (
+        <nav className="h-16 border-b bg-white dark:bg-gray-900">
+          <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">S</div>
+              <span className="font-semibold text-lg">ShadcnBlocks</span>
+            </div>
+
+            <div className="hidden md:flex items-center gap-6">
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300">Products</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300">Pricing</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300">Docs</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300">About</a>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button className="hidden sm:inline-flex px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800">Sign In</button>
+              <button className="px-4 py-2 text-sm font-medium bg-black text-white rounded-lg hover:bg-gray-800 dark:bg-white dark:text-black">Get Started</button>
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    // Navbar 02 - With Theme Toggle
+    function Navbar02() {
+      const [dark, setDark] = useState(false);
+      return (
+        <nav className="h-16 border-b bg-white dark:bg-gray-900">
+          <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-12">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-blue-500 flex items-center justify-center text-white font-bold">S</div>
+                <span className="font-semibold text-lg">Brand</span>
+              </div>
+              <div className="hidden md:flex items-center gap-6">
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Home</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Features</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Pricing</a>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="hidden sm:inline-flex px-4 py-2 text-sm border border-gray-300 rounded-lg">Sign In</button>
+              <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg">Sign Up</button>
+              <button onClick={() => setDark(!dark)} className="p-2 border border-gray-300 rounded-lg hover:bg-gray-100">
+                {dark ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    // Navbar 03 - Minimal with Arrow Icon
+    function Navbar03() {
+      return (
+        <nav className="h-16 border-b bg-white dark:bg-gray-900">
+          <div className="mx-auto flex h-full max-w-5xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded bg-gradient-to-br from-green-400 to-emerald-500"></div>
+                <span className="font-semibold">Logo</span>
+              </div>
+              <div className="hidden md:flex items-center gap-6">
+                <a href="#" className="text-sm text-gray-600">Features</a>
+                <a href="#" className="text-sm text-gray-600">Docs</a>
+                <a href="#" className="text-sm text-gray-600">Pricing</a>
+              </div>
+            </div>
+            <button className="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white text-sm font-medium rounded-full hover:bg-green-700">
+              Get Started <span>→</span>
+            </button>
+          </div>
+        </nav>
+      );
+    }
+
+    // Navbar 04 - Floating/Pill Style
+    function Navbar04() {
+      return (
+        <div className="pt-6 px-4">
+          <nav className="h-16 max-w-6xl mx-auto rounded-full border bg-white dark:bg-gray-900 shadow-sm">
+            <div className="mx-auto flex h-full items-center justify-between px-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500"></div>
+                <span className="font-semibold">Brand</span>
+              </div>
+              <div className="hidden md:flex items-center gap-6">
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Home</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">About</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Blog</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <button className="hidden sm:inline-flex px-4 py-2 text-sm border border-gray-300 rounded-full">Sign In</button>
+                <button className="px-4 py-2 text-sm bg-orange-500 text-white rounded-full">Get Started</button>
+              </div>
+            </div>
+          </nav>
+        </div>
+      );
+    }
+
+    // Navbar 05 - With Search Bar
+    function Navbar05() {
+      return (
+        <div className="pt-6 px-4">
+          <nav className="h-16 max-w-6xl mx-auto rounded-full border bg-white dark:bg-gray-900 shadow-sm">
+            <div className="mx-auto flex h-full items-center justify-between px-4">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-indigo-500"></div>
+                  <span className="font-semibold">SearchNav</span>
+                </div>
+                <div className="hidden md:block relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input type="text" placeholder="Search..." className="w-[280px] pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm border-0" />
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="md:hidden p-2 bg-gray-100 rounded-full"><Search size={18} /></button>
+                <button className="hidden sm:inline-flex px-4 py-2 text-sm border border-gray-300 rounded-full">Sign In</button>
+                <button className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-full">Get Started</button>
+              </div>
+            </div>
+          </nav>
+        </div>
+      );
+    }
+
+    // ============================================
+    // RAPIDLAUNCH NAVBARS
+    // ============================================
+
+    // RapidNav 01 - Basic
+    function RapidNav01() {
+      const [menuOpen, setMenuOpen] = useState(false);
+      return (
+        <header className="bg-white dark:bg-gray-900">
+          <div className="container mx-auto flex h-14 items-center justify-between gap-4 px-4">
+            <div className="flex items-center gap-2">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 hover:bg-gray-100 rounded-lg md:hidden">
+                <Menu size={20} />
+              </button>
+              <div className="h-8 w-8 rounded bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                <span className="text-white text-sm font-bold">R</span>
+              </div>
+            </div>
+            <nav className="hidden md:flex items-center gap-4">
+              <a href="#" className="text-sm font-medium px-3 py-1.5 rounded-md bg-gray-100">Products</a>
+              <a href="#" className="text-sm font-medium px-3 py-1.5 text-gray-600">Pricing</a>
+              <a href="#" className="text-sm font-medium px-3 py-1.5 text-gray-600">Docs</a>
+              <a href="#" className="text-sm font-medium px-3 py-1.5 text-gray-600">About</a>
+            </nav>
+            <div className="flex items-center gap-2">
+              <button className="px-3 py-1.5 text-sm bg-gray-100 rounded-md">Sign-in</button>
+              <button className="px-3 py-1.5 text-sm bg-black text-white rounded-md">Get Started</button>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // MAGICUI STYLE
+    // ============================================
+
+    function MagicNav() {
+      return (
+        <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur dark:bg-gray-900/80">
+          <div className="container px-6 flex h-14 items-center gap-2">
+            <button className="lg:hidden p-2"><Menu size={20} /></button>
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded bg-gradient-to-br from-violet-500 to-fuchsia-500"></div>
+              <span className="font-semibold">MagicUI</span>
+            </div>
+            <nav className="hidden lg:flex items-center gap-6 ml-6">
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Components</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Templates</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Pricing</a>
+            </nav>
+            <div className="flex-1"></div>
+            <div className="flex items-center gap-2">
+              <button className="p-2 hover:bg-gray-100 rounded"><Search size={18} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded">
+                <Github size={18} />
+              </button>
+              <button className="p-2 hover:bg-gray-100 rounded">
+                <Sun size={18} />
+              </button>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // MIXCNUI STYLE
+    // ============================================
+
+    function MixcnNav() {
+      const [dark, setDark] = useState(false);
+      return (
+        <header className="bg-white dark:bg-[#020817] w-full border-b">
+          <div className="mx-auto flex h-16 items-center gap-8 px-4 sm:px-6 lg:px-8">
+            <a className="flex items-center gap-2 text-purple-600 dark:text-white" href="#">
+              <span className="text-2xl font-bold font-mono">Mixcn-UI</span>
+            </a>
+            <div className="flex flex-1 items-center justify-end">
+              <nav className="hidden md:flex items-center gap-6">
+                <a className="text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300" href="#">Components</a>
+                <a className="text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300" href="#">Templates</a>
+              </nav>
+            </div>
+            <div className="flex items-center gap-4">
+              <button onClick={() => setDark(!dark)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <a href="#" className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Github className="h-5 w-5" />
+                <span className="text-sm font-medium hidden sm:inline">Star on GitHub</span>
+              </a>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // NEOBRUTALISM STYLE
+    // ============================================
+
+    function NeobrutalNav() {
+      return (
+        <nav className="flex h-[70px] items-center border-b-4 border-black bg-yellow-100 px-5">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
+            <div className="flex items-center gap-8">
+              <div className="text-xl size-8 rounded flex bg-black text-white items-center justify-center font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                N
+              </div>
+              <div className="hidden lg:flex items-center gap-6 text-base font-medium">
+                <a href="#" className="hover:underline">Docs</a>
+                <a href="#" className="hover:underline">Components</a>
+                <a href="#" className="hover:underline">Charts</a>
+                <a href="#" className="hover:underline">Showcase</a>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <button className="p-2 border-2 border-black rounded shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+                <Search size={18} />
+              </button>
+              <a href="#" className="flex items-center gap-2 px-3 py-2 border-2 border-black rounded shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+                <span className="font-semibold">2.4k</span>
+                <Star size={16} />
+              </a>
+              <button className="p-2 border-2 border-black rounded bg-yellow-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+                <Sun size={18} />
+              </button>
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    // ============================================
+    // EDIL-OZI STYLE
+    // ============================================
+
+    function EdilOziNav() {
+      const [open, setOpen] = useState(false);
+      const links = ['Home', 'Team', 'About', 'Products', 'Contact'];
+      return (
+        <header className="flex w-full items-center justify-between bg-sky-200 px-4 py-4 lg:px-6">
+          <div className="text-lg font-bold">Logo</div>
+          <nav className={`absolute right-0 top-0 z-30 mx-0 flex h-full w-[240px] flex-col items-center justify-start space-y-6 bg-sky-300 py-10 lg:relative lg:h-auto lg:w-auto lg:flex-row lg:justify-between lg:space-x-4 lg:space-y-0 lg:bg-transparent lg:py-0 ${open ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
+            <ul className="flex flex-col items-start gap-2 lg:flex-row lg:items-center lg:space-x-6">
+              {links.map(link => (
+                <a key={link} href="#" className="hover:text-blue-600">{link}</a>
+              ))}
+            </ul>
+            <button className="rounded-full bg-sky-400 px-7 py-2 text-black">Sign In</button>
+          </nav>
+          <button onClick={() => setOpen(!open)} className="z-40 block lg:hidden">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          {open && <div onClick={() => setOpen(false)} className="fixed inset-0 bg-black/30 lg:hidden"></div>}
+        </header>
+      );
+    }
+
+    // ============================================
+    // PAGE-UI STYLE
+    // ============================================
+
+    function PageUINav() {
+      const [dark, setDark] = useState(false);
+      return (
+        <header className="flex items-center justify-between py-6 px-6 container-wide">
+          <a href="#" className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded bg-gradient-to-br from-purple-500 to-pink-500"></div>
+            <div className="hidden sm:block text-2xl font-semibold">Page UI</div>
+          </a>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <a href="#" className="hidden md:block text-sm hover:text-purple-500">Components</a>
+            <a href="#" className="hidden md:block text-sm hover:text-purple-500">Templates</a>
+            <a href="#" className="hidden md:block text-sm hover:text-purple-500">Pricing</a>
+            <button className="p-2 hover:bg-gray-100 rounded"><Search size={18} /></button>
+            <button onClick={() => setDark(!dark)} className="p-2 hover:bg-gray-100 rounded">{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <button className="p-2 hover:bg-gray-100 rounded lg:hidden"><Menu size={18} /></button>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // SYNTAX-UI STYLE (with backdrop blur)
+    // ============================================
+
+    function SyntaxNav() {
+      return (
+        <div className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between gap-12 px-4 backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-1">
+            <div className="h-6 w-6 rounded-lg bg-red-500 flex items-center justify-center">
+              <span className="text-white text-xs font-bold">S</span>
+            </div>
+            <span className="text-md font-medium">Syntax<span className="text-xs font-bold text-red-500">UI</span></span>
+          </div>
+          <ul className="hidden lg:flex items-center gap-4">
+            <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300">Get Started</a></li>
+            <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300">Templates</a></li>
+          </ul>
+          <div className="flex items-center gap-3">
+            <button className="p-2 hover:bg-gray-100 rounded"><Search size={18} /></button>
+            <button className="p-2 hover:bg-gray-100 rounded"><Sun size={18} /></button>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // ONYX STYLE
+    // ============================================
+
+    function OnyxNav() {
+      return (
+        <header className="sticky top-0 z-40 w-full border-b bg-white dark:bg-gray-900">
+          <div className="container flex h-16 items-center space-x-4 px-4">
+            <button className="p-2 hover:bg-gray-100 rounded lg:hidden"><Menu size={20} /></button>
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded bg-gradient-to-br from-cyan-500 to-blue-500"></div>
+              <span className="font-semibold hidden sm:block">Onyx</span>
+            </div>
+            <nav className="hidden lg:flex items-center gap-6 ml-6">
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Dashboard</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Projects</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Settings</a>
+            </nav>
+            <div className="flex flex-1 items-center justify-end space-x-2">
+              <button className="p-2 hover:bg-gray-100 rounded"><Github size={20} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><Twitter size={20} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><Moon size={20} /></button>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // PROXMOX HELPERS STYLE (glass effect)
+    // ============================================
+
+    function ProxmoxNav() {
+      const [scrolled, setScrolled] = useState(false);
+      useEffect(() => {
+        const handler = () => setScrolled(window.scrollY > 0);
+        window.addEventListener('scroll', handler);
+        return () => window.removeEventListener('scroll', handler);
+      }, []);
+      return (
+        <div className={`fixed left-0 top-0 z-50 flex w-full justify-center px-4 ${scrolled ? 'glass border-b bg-white/50' : ''}`}>
+          <div className="flex h-16 w-full max-w-7xl items-center justify-between">
+            <a href="/" className="flex items-center gap-2 font-semibold">
+              <div className="h-4 w-4 rounded bg-blue-500"></div>
+              <span className="hidden lg:block">Proxmox Helper</span>
+            </a>
+            <div className="flex gap-2">
+              <button className="p-2 hover:bg-gray-100 rounded"><Search size={18} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><Github size={18} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><ExternalLink size={18} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><Sun size={18} /></button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================
+    // NEXT MOTION STYLE (glass navbar)
+    // ============================================
+
+    function NextMotionNav() {
+      return (
+        <nav className="flex w-full items-center bg-[#000000ab] px-5 backdrop-blur-lg">
+          <div className="m-auto flex w-full max-w-6xl items-center justify-between py-2">
+            <a href="/" className="inline-block">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-28 bg-gradient-to-r from-purple-500 to-pink-500 rounded"></div>
+              </div>
+            </a>
+            <a href="#" className="flex items-center gap-3">
+              <div className="flex items-center gap-1 rounded bg-white/10 px-2 py-1">
+                <Github size={18} />
+                <span className="hidden text-sm sm:flex">Star us on GitHub</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Star size={14} />
+                <span className="text-sm">1.2k</span>
+              </div>
+            </a>
+          </div>
+        </nav>
+      );
+    }
+
+    // ============================================
+    // SIMPLE MINIMAL NAV
+    // ============================================
+
+    function SimpleMinimalNav() {
+      return (
+        <header className="border-b">
+          <div className="container mx-auto flex h-16 items-center justify-between px-4">
+            <div className="flex items-center gap-8">
+              <a href="/" className="text-xl font-bold">Brand</a>
+              <nav className="hidden md:flex items-center gap-6">
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Features</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Pricing</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">About</a>
+                <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Blog</a>
+              </nav>
+            </div>
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">Sign in</a>
+              <a href="#" className="px-4 py-2 text-sm bg-black text-white rounded-lg">Get started</a>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // CENTERED LOGO NAV
+    // ============================================
+
+    function CenteredLogoNav() {
+      return (
+        <header className="border-b">
+          <div className="container mx-auto flex h-16 items-center justify-between px-4">
+            <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+              <a href="#" className="hover:text-gray-900">Features</a>
+              <a href="#" className="hover:text-gray-900">Pricing</a>
+            </div>
+            <a href="/" className="text-xl font-bold">CenteredLogo</a>
+            <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+              <a href="#" className="hover:text-gray-900">Docs</a>
+              <a href="#" className="hover:text-gray-900">Blog</a>
+            </div>
+            <div className="flex items-center gap-2 md:hidden">
+              <button className="p-2"><Menu size={20} /></button>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // SIDEBAR TOGGLE NAV
+    // ============================================
+
+    function SidebarToggleNav() {
+      return (
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 sm:px-6">
+          <button className="p-2 border rounded sm:hidden">
+            <Menu size={20} />
+          </button>
+          <h1 className="font-semibold">Dashboard</h1>
+          <div className="flex-1"></div>
+          <button className="p-2 hover:bg-gray-100 rounded"><Search size={18} /></button>
+          <button className="p-2 hover:bg-gray-100 rounded"><Bell size={18} /></button>
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"></div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // DASHBOARD WITH TABS NAV
+    // ============================================
+
+    function DashboardTabsNav() {
+      const [active, setActive] = useState('Overview');
+      const tabs = ['Overview', 'Integrations', 'Deployments', 'Domains', 'Usage', 'Storage', 'Settings'];
+      return (
+        <header className="mt-4 flex w-full flex-col items-center justify-between border-b px-4 xl:px-6">
+          <div className="flex w-full items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <button className="p-2 hover:bg-gray-100 rounded hidden md:block"><Menu size={20} /></button>
+              <div className="flex items-center gap-2">
+                <div className="h-6 w-6 rounded bg-gradient-to-br from-indigo-500 to-purple-500"></div>
+                <span className="font-semibold">Team</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="p-2 hover:bg-gray-100 rounded"><Bell size={18} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><BookOpen size={18} /></button>
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 ml-2"></div>
+            </div>
+          </div>
+          <div className="flex w-full items-center justify-start pb-1.5 mt-3 overflow-x-auto">
+            {tabs.map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActive(tab)}
+                className={`px-3 py-1.5 text-sm whitespace-nowrap ${active === tab ? 'text-black font-medium border-b-2 border-black' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // APP LISTING NAV
+    // ============================================
+
+    function AppListingNav() {
+      return (
+        <header className="border-b">
+          <div className="container mx-auto flex h-14 items-center justify-between px-4">
+            <div className="flex items-center gap-4">
+              <button className="p-2 hover:bg-gray-100 rounded"><Menu size={20} /></button>
+              <a href="/" className="flex items-center gap-2">
+                <div className="h-7 w-7 rounded bg-gradient-to-br from-pink-500 to-rose-500"></div>
+                <span className="font-semibold">AppName</span>
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="p-2 hover:bg-gray-100 rounded"><Search size={18} /></button>
+              <button className="p-2 hover:bg-gray-100 rounded"><Bell size={18} /></button>
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 ml-2"></div>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ============================================
+    // MAIN APP
+    // ============================================
+
+    function App() {
+      const navbars = [
+        { name: 'Navbar 01 - Basic', component: <Navbar01 /> },
+        { name: 'Navbar 02 - With Theme Toggle', component: <Navbar02 /> },
+        { name: 'Navbar 03 - Minimal Arrow CTA', component: <Navbar03 /> },
+        { name: 'Navbar 04 - Floating Pill', component: <Navbar04 /> },
+        { name: 'Navbar 05 - With Search', component: <Navbar05 /> },
+        { name: 'RapidLaunch Nav - Basic', component: <RapidNav01 /> },
+        { name: 'MagicUI Style', component: <MagicNav /> },
+        { name: 'MixcnUI Style', component: <MixcnNav /> },
+        { name: 'Neobrutalism Style', component: <NeobrutalNav /> },
+        { name: 'Edil-Ozi Style', component: <EdilOziNav /> },
+        { name: 'Page-UI Style', component: <PageUINav /> },
+        { name: 'SyntaxUI Style (Blur)', component: <SyntaxNav /> },
+        { name: 'Onyx Style', component: <OnyxNav /> },
+        { name: 'Proxmox Helpers (Glass)', component: <ProxmoxNav /> },
+        { name: 'NextMotion (Glass)', component: <NextMotionNav /> },
+        { name: 'Simple Minimal', component: <SimpleMinimalNav /> },
+        { name: 'Centered Logo', component: <CenteredLogoNav /> },
+        { name: 'Sidebar Toggle (Dashboard)', component: <SidebarToggleNav /> },
+        { name: 'Dashboard Tabs', component: <DashboardTabsNav /> },
+        { name: 'App Listing', component: <AppListingNav /> },
+      ];
+
+      return (
+        <div>
+          {navbars.map((navbar, index) => (
+            <div key={index} className="preview-section">
+              <div className="preview-label">{navbar.name}</div>
+              <div className="preview-container">
+                {navbar.component}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
