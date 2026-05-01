@@ -1,0 +1,201 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Upload } from "lucide-react";
+import { usePlayground } from "./playground-context";
+import {
+  getComponentList,
+  discoverComponent,
+  type ComponentListItem,
+} from "./auto-discovery";
+import { PlaygroundLogo } from "./playground-logo";
+
+import Link from "next/link";
+
+export function PlaygroundHeader() {
+  const { state, setSelectedComponent, updateCode, updateStyles } =
+    usePlayground();
+  const [selectedCategory] = useState<string>("all");
+  const [componentList, setComponentList] = useState<ComponentListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingComponent, setIsLoadingComponent] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // Load lightweight component list on mount (no actual imports)
+  useEffect(() => {
+    async function loadComponentList() {
+      setIsLoading(true);
+      const list = await getComponentList();
+      setComponentList(list);
+      setIsLoading(false);
+    }
+    loadComponentList();
+  }, []);
+
+  const categories = [
+    { id: "pricing", label: "Pricing Tables" },
+    { id: "subscription", label: "Subscription" },
+    { id: "payment", label: "Payment" },
+    { id: "usage", label: "Usage & Billing" },
+    { id: "ui", label: "UI Components" },
+  ];
+
+  const filteredComponents =
+    selectedCategory === "all"
+      ? componentList
+      : componentList.filter(
+          (comp: ComponentListItem) => comp.category === selectedCategory,
+        );
+
+  const handleComponentChange = async (componentId: string) => {
+    setIsLoadingComponent(true);
+    setLoadError(null);
+
+    console.log(`[PlaygroundHeader] Loading component: ${componentId}`);
+
+    try {
+      const fullComponent = await discoverComponent(componentId);
+      if (fullComponent) {
+        console.log(
+          `[PlaygroundHeader] Component loaded successfully:`,
+          componentId,
+        );
+        setSelectedComponent(fullComponent);
+        setLoadError(null);
+        setIsLoadingComponent(false);
+      } else {
+        const errorMsg = `Failed to load component: ${componentId}`;
+        console.error(`[PlaygroundHeader] ${errorMsg}`);
+        setLoadError(errorMsg);
+        setIsLoadingComponent(false);
+      }
+    } catch (error) {
+      const errorMsg = `Error loading component ${componentId}: ${error}`;
+      console.error(`[PlaygroundHeader]`, errorMsg, error);
+      setLoadError(errorMsg);
+      setIsLoadingComponent(false);
+    }
+  };
+
+  const handleImportComponent = () => {
+    // Create a file input element
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".tsx,.ts,.jsx,.js,.css";
+    input.multiple = false;
+
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target?.result as string;
+          if (content) {
+            // Determine file type based on extension
+            const extension = file.name.split(".").pop()?.toLowerCase();
+
+            if (extension === "css") {
+              // Import as styles
+              updateStyles(content);
+              console.log(`Imported CSS file: ${file.name}`);
+            } else if (["tsx", "ts", "jsx", "js"].includes(extension || "")) {
+              // Import as component code
+              updateCode(content);
+              console.log(`Imported component file: ${file.name}`);
+            } else {
+              console.warn(`Unsupported file type: ${extension}`);
+              alert(
+                `Unsupported file type: ${extension}. Please select a .tsx, .ts, .jsx, .js, or .css file.`,
+              );
+            }
+          }
+        };
+        reader.onerror = () => {
+          console.error("Error reading file");
+          alert("Error reading file. Please try again.");
+        };
+        reader.readAsText(file);
+      }
+    };
+
+    // Trigger file selection
+    input.click();
+  };
+
+  return (
+    <div className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b backdrop-blur">
+      <div className="flex items-center justify-between px-4 py-3">
+        {/* Left Section - Play Button, Logo, Component Selector */}
+        <div className="flex items-center gap-4">
+          <Link href="/">
+            <PlaygroundLogo />
+          </Link>
+
+          {/* Component Selector */}
+          <Select
+            value={state.selectedComponent?.id || ""}
+            onValueChange={handleComponentChange}
+            disabled={isLoading || isLoadingComponent}
+          >
+            <SelectTrigger className="w-64">
+              <SelectValue
+                placeholder={
+                  isLoading ? "Loading components..." : "Select a component"
+                }
+              >
+                {loadError
+                  ? "Error loading component"
+                  : isLoadingComponent
+                    ? "Loading component..."
+                    : state.selectedComponent?.name ||
+                      (isLoading ? "Loading..." : "Select a component")}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="max-h-96 w-64 min-w-64 overflow-y-auto">
+              {categories.map((category) => (
+                <div key={category.id}>
+                  <div className="text-foreground bg-muted/50 border-border border-b px-3 py-2 text-sm font-semibold">
+                    {category.label}
+                  </div>
+                  {filteredComponents
+                    .filter(
+                      (comp: ComponentListItem) =>
+                        comp.category === category.id || category.id === "all",
+                    )
+                    .map((component: ComponentListItem) => (
+                      <SelectItem
+                        key={component.id}
+                        value={component.id}
+                        className="px-3 py-2"
+                      >
+                        <span className="text-sm font-medium">
+                          {component.name}
+                        </span>
+                      </SelectItem>
+                    ))}
+                </div>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Right Section - Import Button */}
+        <div className="flex items-center gap-3">
+          <Button onClick={handleImportComponent} variant="outline" size="sm">
+            <Upload className="mr-2 h-4 w-4" />
+            <span className="text-sm">IMPORT</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
