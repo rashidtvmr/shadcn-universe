@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 
 export const revalidate = false;
+export const dynamic = 'force-dynamic';
 
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
@@ -109,17 +110,4 @@ export async function GET(
   );
 }
 
-export function generateStaticParams(): {
-  slug: string[];
-}[] {
-  return source
-    .generateParams()
-    .filter((page) => {
-      const pageData = source.getPage(page.slug);
-      return pageData !== null && pageData !== undefined;
-    })
-    .map((page) => ({
-      ...page,
-      slug: [...page.slug, 'image.png'],
-    }));
-}
+// Dynamic route - no static params needed
